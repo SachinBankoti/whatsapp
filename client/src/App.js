@@ -1,8 +1,11 @@
 import React from 'react'
+import Messenger from './components/Messenger'
 
 const App = () => {
   return (
-    <div>App</div>
+    <div>
+      <Messenger />
+    </div>
   )
 }
 
