@@ -1,5 +1,7 @@
 import { Dialog, Box ,Typography,List,ListItem,styled} from "@mui/material";
 import { qrCodeImage } from "../constants/data";
+import { GoogleLogin } from '@react-oauth/google';
+import { jwtDecode } from "jwt-decode";
 
 const Components = styled(Box)`
     display: flex;
@@ -10,7 +12,7 @@ const dialogStyle = {
   maxWidth: "100%",
   maxHeight: "100%",
   boxShadow: "none",
-  overflow: "none",
+  overflow: "hidden",
   marginTop: "12%",
 };
 
@@ -30,21 +32,40 @@ const Title = styled(Typography)`
     font0-family: inherit;
     margin-bottom: 25px;
 `
+const StyledList = styled(List)`
+    & > li {
+        padding: 0;
+        margin-top: 15px;
+        font-size: 18px;
+        line-height: 28px;
+        colour: #4a4a4a;
+    }
+`
 const LoginDialog = () => {
+    const onLoginSuccess=(res)=>{
+        const decoded = jwtDecode(res.credential);
+        console.log(decoded);
+    }
+    const onLoginError =(res)=>{
+        console.log('Login Failed',res);
+    }
   return (
     <div>
-      <Dialog open={true} PaperProps={{ sx: dialogStyle }}>
+      <Dialog open={true} PaperProps={{ sx: dialogStyle }} hideBackdrop={true}>
         <Components>
           <Container>
             <Title>To use WhatsApp on Your computer:</Title>
-            <List>
+            <StyledList>
                 <ListItem>1. Open WhatsApp on your phone</ListItem>
                 <ListItem>2. Tap Menu Setting</ListItem>
                 <ListItem>3. Point your phone to this screen to capture the code</ListItem>
-            </List>
+            </StyledList>
           </Container>
-          <Box>
+          <Box style={{ position: 'relative'}}>
             <QRCode src={qrCodeImage} alt="qr code"/>
+            <Box style={{ position: 'absolute', top: '50%',transform: 'translateX(45%)'}}>
+                <GoogleLogin onSuccess={onLoginSuccess} onError={onLoginError} />
+            </Box>
           </Box>
         </Components>
       </Dialog>
